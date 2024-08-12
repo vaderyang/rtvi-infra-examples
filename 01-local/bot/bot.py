@@ -12,7 +12,8 @@ from pipecat.processors.frameworks.rtvi import (
     RTVIProcessor,
     RTVISetup)
 from pipecat.frames.frames import EndFrame
-from pipecat.transports.services.daily import DailyParams, DailyTransport
+from pipecat.transports.services.daily import DailyParams, DailyTranscriptionSettings, DailyTransport
+
 from pipecat.vad.silero import SileroVADAnalyzer
 
 from loguru import logger
@@ -25,6 +26,7 @@ logger.add(sys.stderr, level="DEBUG")
 
 
 async def main(room_url, token, bot_config):
+    print(bot_config)
     transport = DailyTransport(
         room_url,
         token,
@@ -33,8 +35,13 @@ async def main(room_url, token, bot_config):
             audio_out_enabled=True,
             transcription_enabled=True,
             vad_enabled=True,
-            vad_analyzer=SileroVADAnalyzer()
-        ))
+            vad_analyzer=SileroVADAnalyzer(),
+            transcription_settings=DailyTranscriptionSettings(
+                    language="zh",
+                    tier="nova",
+                    model="2-general")
+        )
+    )
 
     rtai = RTVIProcessor(
         transport=transport,
