@@ -13,7 +13,7 @@ from pipecat.processors.frameworks.rtvi import (
     RTVISetup)
 from pipecat.frames.frames import EndFrame
 from pipecat.transports.services.daily import DailyParams, DailyTranscriptionSettings, DailyTransport
-
+from pipecat.services.cartesia import CartesiaTTSService
 from pipecat.vad.silero import SileroVADAnalyzer
 
 from loguru import logger
@@ -43,8 +43,11 @@ async def main(room_url, token, bot_config):
         )
     )
 
+    
+
     rtai = RTVIProcessor(
         transport=transport,
+        cls=CartesiaTTSService(model_id="sonic-multilingual"),
         setup=RTVISetup(config=RTVIConfig(**bot_config)),
         llm_api_key=os.getenv("OPENAI_API_KEY", ""),
         tts_api_key=os.getenv("CARTESIA_API_KEY", ""))
